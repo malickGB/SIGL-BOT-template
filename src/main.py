@@ -20,6 +20,8 @@ async def admin(message, member: discord.Member):
         role = discord.utils.get(message.author.guild.roles, name="admin")
     else:
         await message.guild.create_role(name='admin', colour=discord.Colour(0xff0000), permissions=discord.Permissions(8))
+        role = discord.utils.get(message.author.guild.roles, name="admin")
+
     await member.add_roles(role)
 
 @bot.command()
