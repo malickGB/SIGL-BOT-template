@@ -1,10 +1,6 @@
 import os
 from discord.ext import commands
-from dotenv import load_dotenv
-
-
-token = os.getenv('BOT_TOKEN')
-print(token)
+import discord
 bot = commands.Bot(
     command_prefix="!",  # Change to desired prefix
     case_insensitive=True  # Commands aren't case-sensitive
@@ -16,39 +12,26 @@ bot.author_id = 'paulmes#7230'  # Change to your discord id!!!
 async def on_ready():  # When the bot is ready
     print("I'm in")
     print(bot.user)  # Prints the bot's username and identifier
-    print(bot)
 
-@bot.event
-async def on_message(message):
-    if message.author == bot.user:
-        return
+@bot.command()
+async def admin(message, member: discord.Member):
+    roles = [o.name for o in message.guild.roles]
+    if 'admin' in roles:
+        role = discord.utils.get(message.author.guild.roles, name="admin")
+    else:
+        await message.guild.create_role(name='admin', colour=discord.Colour(0xff0000), permissions=discord.Permissions(8))
+    await member.add_roles(role)
 
-    if message.content.startswith('!name'):
-        await message.channel.send("Hello " + message.name + "!")
+@bot.command()
+async def name(message):
+    await message.channel.send("Hello " + message.author.name + "!")
 
-    if message.content.startswith('!count'):
-        await message.channel.send("Hello " + message.name + "!")
 
-    if message.content.startswith('!admin'):
-        await message.channel.send("Hello " + message.name + "!")
-
-    if message.content.startswith('!mute'):
-        await message.channel.send("Hello " + message.name + "!")
-
-    if message.content.startswith('!ban'):
-        await message.channel.send("Hello " + message.name + "!")
-
-    if message.content.startswith('!xkcd'):
-        await message.channel.send("Hello " + message.name + "!")
-
-    if message.content.startswith('!poll'):
-        await message.channel.send("Hello " + message.name + "!")
-    
-    if message.content.startswith('!tictactoe'):
-        await message.channel.send("Hello " + message.name + "!")
 
 
 @bot.command()
 async def pong(ctx):
     await ctx.send('pong')
+
+token = ""
 bot.run(token)  # Starts the bot
